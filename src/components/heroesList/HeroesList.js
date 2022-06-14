@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
@@ -24,13 +24,17 @@ const HeroesList = () => {
         // eslint-disable-next-line
     }, []);
 
-    const onDeleted = (id) => {
-        request(`http://localhost:3001/heroes/${id}`, "DELETE")
-            .then(() => dispatch(heroDeleted(id)))
-            .then(() => dispatch(filterHeroes()))
-            .then(() => console.log(`Герой с id: ${id} успешно удалён из базы данных`))
-            .catch((error) => console.log(error));
-    };
+    const onDeleted = useCallback(
+        (id) => {
+            request(`http://localhost:3001/heroes/${id}`, "DELETE")
+                .then(() => console.log(`Герой с id: ${id} успешно удалён из базы данных`))
+                .then(() => dispatch(heroDeleted(id)))
+                .then(() => dispatch(filterHeroes()))
+                .catch((error) => console.log(error));
+        },
+        // eslint-disable-next-line
+        [request]
+    );
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner />;

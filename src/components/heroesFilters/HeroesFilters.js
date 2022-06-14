@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHttp } from "../../hooks/http.hook";
+import classNames from "classnames";
 
+import { useHttp } from "../../hooks/http.hook";
 import { filtersFetching, filtersFetched, filtersFetchingError, setActiveFilter, filterHeroes } from "../../actions";
 import Spinner from "../spinner/Spinner";
 
@@ -33,45 +34,22 @@ const HeroesFilters = () => {
     }
 
     const renderFiltersList = (arr) => {
-        const items = arr.map((item, i) => {
-            let classNames = "btn ";
-            let label;
+        if (arr.length === 0) {
+            return <h5 className="text-center mt-5">Фильтры не найдены</h5>;
+        }
 
-            switch (item) {
-                case "all":
-                    classNames += "btn-outline-dark";
-                    label = "Все";
-                    break;
-                case "fire":
-                    classNames += "btn-danger";
-                    label = "Огонь";
-                    break;
-                case "water":
-                    classNames += "btn-primary";
-                    label = "Вода";
-                    break;
-                case "wind":
-                    classNames += "btn-success";
-                    label = "Воздух";
-                    break;
-                case "earth":
-                    classNames += "btn-secondary";
-                    label = "Земля";
-                    break;
-                default:
-                    break;
-            }
-
-            if (item === activeFilter) {
-                classNames += " active";
-            }
+        return arr.map(({ name, className, label }) => {
+            const btnClass = classNames("btn", className, {
+                active: name === activeFilter,
+            });
 
             return (
                 <button
-                    key={i}
-                    className={classNames}
+                    key={name}
+                    id={name}
+                    className={btnClass}
                     onClick={() => {
-                        dispatch(setActiveFilter(item));
+                        dispatch(setActiveFilter(name));
                         dispatch(filterHeroes());
                     }}
                 >
@@ -79,8 +57,6 @@ const HeroesFilters = () => {
                 </button>
             );
         });
-
-        return <div className="btn-group">{items}</div>;
     };
 
     const elements = renderFiltersList(filters);
@@ -89,7 +65,7 @@ const HeroesFilters = () => {
         <div className="card shadow-lg mt-4">
             <div className="card-body">
                 <p className="card-text">Отфильтруйте героев по элементам</p>
-                {elements}
+                <div className="btn-group">{elements}</div>
             </div>
         </div>
     );
