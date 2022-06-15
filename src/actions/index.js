@@ -50,15 +50,9 @@ export const filtersFetchingError = () => {
     };
 };
 
-export const setActiveFilter = (activeFilter) => {
+export const activeFilterChanged = (activeFilter) => {
     return {
-        type: "SET_ACTIVE_FILTER",
+        type: "ACTIVE_FILTER_CHANGED",
         payload: activeFilter,
-    };
-};
-
-export const filterHeroes = () => {
-    return {
-        type: "FILTER_HEROES",
     };
 };

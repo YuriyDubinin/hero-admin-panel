@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
-import { heroAdded, filterHeroes } from "../../actions";
+import { heroAdded } from "../../actions";
 
 const HeroesAddForm = () => {
     const [heroName, setHeroName] = useState("");
     const [heroDescription, setHeroDescription] = useState("");
     const [heroElement, setHeroElement] = useState("");
 
-    const { filters, filtersLoadingStatus } = useSelector((state) => state);
+    const { filters, filtersLoadingStatus } = useSelector((state) => state.filters);
     const dispatch = useDispatch();
     const { request } = useHttp();
 
@@ -28,7 +28,6 @@ const HeroesAddForm = () => {
             request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
                 .then((data) => console.log(data, "Успешно создан в базе данных"))
                 .then(() => dispatch(heroAdded(newHero)))
-                .then(() => dispatch(filterHeroes()))
                 .catch((error) => console.log(error));
         } else {
             alert("Для добавления героя необходимо заполнить все поля");

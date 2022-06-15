@@ -1,16 +1,30 @@
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { createSelector } from "reselect";
 
 import { useHttp } from "../../hooks/http.hook";
-import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleted, filterHeroes } from "../../actions";
+import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleted } from "../../actions";
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
 import "./heroesList.scss";
 
 const HeroesList = () => {
-    const { heroesLoadingStatus, filteredHeroes } = useSelector((state) => state);
+    const filteredHeroesSelector = createSelector(
+        (state) => state.filters.activeFilter,
+        (state) => state.heroes.heroes,
+        (filter, heroes) => {
+            if (filter === "all") {
+                return heroes;
+            } else {
+                return heroes.filter((item) => item.element === filter);
+            }
+        }
+    );
+
+    const filteredHeroes = useSelector(filteredHeroesSelector);
+    const heroesLoadingStatus = useSelector((state) => state.heroesLoadingStatus);
     const dispatch = useDispatch();
     const { request } = useHttp();
 
@@ -18,7 +32,6 @@ const HeroesList = () => {
         dispatch(heroesFetching());
         request("http://localhost:3001/heroes")
             .then((data) => dispatch(heroesFetched(data)))
-            .then(() => dispatch(filterHeroes()))
             .catch(() => dispatch(heroesFetchingError()));
 
         // eslint-disable-next-line
@@ -29,7 +42,6 @@ const HeroesList = () => {
             request(`http://localhost:3001/heroes/${id}`, "DELETE")
                 .then(() => console.log(`Герой с id: ${id} успешно удалён из базы данных`))
                 .then(() => dispatch(heroDeleted(id)))
-                .then(() => dispatch(filterHeroes()))
                 .catch((error) => console.log(error));
         },
         // eslint-disable-next-line

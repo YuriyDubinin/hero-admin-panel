@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames";
 
 import { useHttp } from "../../hooks/http.hook";
-import { filtersFetching, filtersFetched, filtersFetchingError, setActiveFilter, filterHeroes } from "../../actions";
+import { filtersFetching, filtersFetched, filtersFetchingError, activeFilterChanged } from "../../actions";
 import Spinner from "../spinner/Spinner";
 
 const HeroesFilters = () => {
-    const { filters, filtersLoadingStatus, activeFilter } = useSelector((state) => state);
+    const { filters, filtersLoadingStatus, activeFilter } = useSelector((state) => state.filters);
     const dispatch = useDispatch();
     const { request } = useHttp();
 
@@ -44,15 +44,7 @@ const HeroesFilters = () => {
             });
 
             return (
-                <button
-                    key={name}
-                    id={name}
-                    className={btnClass}
-                    onClick={() => {
-                        dispatch(setActiveFilter(name));
-                        dispatch(filterHeroes());
-                    }}
-                >
+                <button key={name} id={name} className={btnClass} onClick={() => dispatch(activeFilterChanged(name))}>
                     {label}
                 </button>
             );
