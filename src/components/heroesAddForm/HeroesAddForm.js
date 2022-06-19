@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 import { useHttp } from "../../hooks/http.hook";
-import { heroAdded } from "../../actions";
+import { heroCreated } from "../heroesList/heroesSlice";
 
 const HeroesAddForm = () => {
     const [heroName, setHeroName] = useState("");
@@ -27,7 +27,7 @@ const HeroesAddForm = () => {
         if ((newHero.name && newHero.description && newHero.element) || newHero.element === "all") {
             request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
                 .then((data) => console.log(data, "Успешно создан в базе данных"))
-                .then(() => dispatch(heroAdded(newHero)))
+                .then(() => dispatch(heroCreated(newHero)))
                 .catch((error) => console.log(error));
         } else {
             alert("Для добавления героя необходимо заполнить все поля");
