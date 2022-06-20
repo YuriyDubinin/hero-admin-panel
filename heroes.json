@@ -17,12 +17,6 @@
       "name": "Морской герой",
       "description": "Как аквамен, но не из DC",
       "element": "water"
-    },
-    {
-      "id": "6de8c684-2570-4b12-a361-85ac4c620cfd",
-      "name": "Игорь",
-      "description": "Сила земли",
-      "element": "earth"
     }
   ],
   "filters": [
